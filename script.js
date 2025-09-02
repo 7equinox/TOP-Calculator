@@ -27,11 +27,30 @@ function operate(num1, operator, num2) {
     }
 }
 
-num1 = 10;
-operator = '*'
-num2 = 5;
+const inputDisplay = document.querySelector('#input-display');
+// console.log(inputDisplay);
+const listBtnDigits = document.querySelectorAll('.btn-digit');
+// console.log(listBtnDigits);
+const ARR_NUM_DIGITS = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0];
 
-console.log( operate(num1, '+', num2) ); // 15
-console.log( operate(num1, '-', num2) ); // 5
-console.log( operate(num1, operator, num2) ); // 50
-console.log( operate(num1, '/', num2) ); // 2
+let strNumDisplay = '';
+
+listBtnDigits.forEach((btnDigit, numIdx) => {
+    // console.log(btnDigit.id);
+
+    btnDigit.addEventListener('click', () => {
+        // console.log(btnDigit.id[4]);
+        inputDisplay.value += ARR_NUM_DIGITS[numIdx];
+        strNumDisplay = inputDisplay.value;
+        console.log(strNumDisplay);
+    });
+});
+
+// num1 = 10;
+// operator = '*'
+// num2 = 5;
+
+// console.log( operate(num1, '+', num2) ); // 15
+// console.log( operate(num1, '-', num2) ); // 5
+// console.log( operate(num1, operator, num2) ); // 50
+// console.log( operate(num1, '/', num2) ); // 2
