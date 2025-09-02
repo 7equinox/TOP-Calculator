@@ -14,3 +14,7 @@ function divide(dividend, divisor) {
     return dividend / divisor;
 }
 
+let num1;
+let operator;
+let num2;
+
