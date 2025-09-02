@@ -35,9 +35,3 @@ console.log( operate(num1, '+', num2) ); // 15
 console.log( operate(num1, '-', num2) ); // 5
 console.log( operate(num1, operator, num2) ); // 50
 console.log( operate(num1, '/', num2) ); // 2
-
-/*
-CONTINUE...
-3. Create a new function operate that takes an operator and two numbers
-and then calls one of the above functions on the numbers.
-*/
