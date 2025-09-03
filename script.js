@@ -109,3 +109,30 @@ listBtnCalc.forEach((btnDigit, numIdx) => {
 // console.log( operate(num1, '-', num2) ); // 5
 // console.log( operate(num1, operator, num2) ); // 50
 // console.log( operate(num1, '/', num2) ); // 2
+
+/** MANUAL TEST #1
+ *  Step 1: Click '2'
+ *  Step 2: Click '+' <-- it must not show + in the display
+ *  Step 3: Click '3'
+ *  Step 4: Click '=' <-- it must display 5 (2 + 3 = 5)
+ *  Step 5: Click '=' again <-- it must display 8 (5 + 3 = 8)
+ */
+
+/** MANUAL TEST #2
+ *  Step 1: Click '2'
+ *  Step 2: Click '+' <-- it must show 'click' effect
+ *  Step 3: Click '3'
+ *  Step 4: Click '=' <-- it must remove the 'click' effect of an operator
+ */
+
+/** MANUAL TEST #3
+ *  Step 1: Click '2'
+ *  Step 2: Click '+' <-- it must show 'click' effect
+ *  Step 3: Click '3'
+ *  Step 4: Click '=' <-- it must display 5 (2 + 3 = 5) and remove the 'click' effect of an operator
+ *  Step 5: Click '4' <-- it must only show 4 in the display
+ *  Step 6: Click '=' <-- it must display 7 (4 + 3 = 7)
+ */
+
+// or just imitate the logic of https://www.calculatorsoup.com/calculators/math/basic.php
+// u can do pseudocode first...
