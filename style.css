@@ -1,0 +1,22 @@
+.container {
+    width: 20rem;
+    height: 80vh;
+}
+
+#input-display {
+    width: 19rem;
+    height: 5rem;
+    font-size: 4rem;
+}
+
+.row-container {
+    width: 19rem;
+
+    display: flex;
+    justify-content:space-between;
+}
+
+button {
+    width: 4rem;
+    font-size: 4rem;
+}
