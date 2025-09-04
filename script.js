@@ -55,22 +55,22 @@ function checkRoundLongDeci(numOutput) {
 
     // If whole number
     const boolIsFloatNum = strOutputParts.length === 2;
-    if(!boolIsFloatNum) {
+    if (!boolIsFloatNum) {
         return numOutput;
     }
 
     // Round the numbers if long decimal
     const boolHasLongDeci = strOutputParts[1].length > INT_MAX_DEC_PLACES;
-    if(boolHasLongDeci) {
+    if (boolHasLongDeci) {
         strOutput = numOutput.toFixed(INT_MAX_DEC_PLACES);
     }
     return parseFloat(strOutput);
 }
 
 function clearDisplayAndData() {
-    inputDisplay.value = '';
+    inputDisplay.value = '0';
     divErrorMsg.textContent = '';
-    // console.clear();
+    console.clear();
     num1 = NaN;
     operator = null;
     num2 = NaN;
@@ -131,16 +131,18 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
             case '+':
             case '-':
                 removeBtnClckEffect();
-                btnCalc.classList.add('btn-clck');
-
+                
                 // Undefined output
                 if (num1 === Infinity) {
                     return;
                 }
 
+                btnCalc.classList.add('btn-clck');
+
                 // Evaluate more than a single pair of numbers at a time
                 if (operator !== null &&
-                    ARR_DIGITS.includes(strLastClckVal)) {
+                    ARR_DIGITS.includes(strLastClckVal) &&
+                    !Number.isNaN(num1)) {
                     num2 = parseFloat(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     handleInvalidOutput();
@@ -161,20 +163,23 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 }
 
                 // Display the number given an operator is picked
-                if (operator !== null &&
-                    ARR_OPERATORS.includes(strLastClckVal)) {
+                if ((operator !== null &&
+                    ARR_OPERATORS.includes(strLastClckVal)) ||
+                    // Prevent leading zeroes
+                    inputDisplay.value === '0') {
                     inputDisplay.value = '';
                 }
+
                 inputDisplay.value += calcBtnVal;
         }
         strLastClckVal = calcBtnVal;
 
-        // console.log("=========================");
-        // console.log("inputDisplay.value = " + inputDisplay.value);
-        // console.log("num1 = " + num1);
-        // console.log("operator = " + operator);
-        // console.log("num2 = " + num2);
-        // console.log("strLastClckVal = " + strLastClckVal);
+        console.log("=========================");
+        console.log("inputDisplay.value = " + inputDisplay.value);
+        console.log("num1 = " + num1);
+        console.log("operator = " + operator);
+        console.log("num2 = " + num2);
+        console.log("strLastClckVal = " + strLastClckVal);
     });
 });
 
