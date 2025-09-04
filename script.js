@@ -97,6 +97,15 @@ function handleInvalidOutput() {
     }
 }
 
+// Function to let only one decimal point
+function toggleBtnDecimal() {
+    if (inputDisplay.value.includes('.')) {
+        btnDecimal.disabled = true;
+    } else {
+        btnDecimal.disabled = false;
+    }
+}
+
 listBtnCalc.forEach((btnCalc, numIdx) => {
     btnCalc.addEventListener('click', () => {
         const calcBtnVal = ARR_CALC_BTN_VAL[numIdx];
@@ -108,21 +117,18 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 return;
             
             case 'backspace':
-                // Start new calc when a result is displayed & press new digit
+                // Start new calc when a result is displayed & press backspace
                 if (strLastClckVal === '=') {
                     clearDisplayAndData();
                 }
 
+                // Keep default display value '0' if empty
                 if (inputDisplay.value !== '0') {
                     inputDisplay.value = inputDisplay.value.slice(0, -1);
-                    if (inputDisplay.value.includes('.')) {
-                        btnDecimal.disabled = true;
-                    } else {
-                        btnDecimal.disabled = false;
+                    if (inputDisplay.value === '') {
+                        inputDisplay.value = '0';
                     }
-                }
-                if (inputDisplay.value === '') {
-                    inputDisplay.value = '0';
+                    toggleBtnDecimal();
                 }
                 break;
 
@@ -133,6 +139,7 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     strLastClckVal === null || // Invalid (only clicks '=')
                     ARR_OPERATORS.includes(strLastClckVal)) {
                     return;
+
                 } else if (Number.isNaN(num1) || // Only input 1st num then '='
                            strLastClckVal === '=') { // Calc output & 2nd num
                     num1 = parseFloat(inputDisplay.value);
@@ -146,12 +153,7 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     num1 = operate(num1, operator, num2);
                 }
                 handleInvalidOutput();
-
-                if (inputDisplay.value.includes('.')) {
-                    btnDecimal.disabled = true;
-                } else {
-                    btnDecimal.disabled = false;
-                }
+                toggleBtnDecimal();
                 break;
 
             case '*':
@@ -174,35 +176,11 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     num2 = parseFloat(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     handleInvalidOutput();
-                    if (inputDisplay.value.includes('.')) {
-                        btnDecimal.disabled = true;
-                    } else {
-                        btnDecimal.disabled = false;
-                    }
+                    toggleBtnDecimal();
                 }
                 num1 = parseFloat(inputDisplay.value);
                 operator = calcBtnVal;
                 btnDecimal.disabled = false;
-                break;
-
-            case '.':
-                // Undefined output
-                if (num1 === Infinity) {
-                    return;
-                }
-
-                // Start new calc when a result is displayed & press new digit
-                if (strLastClckVal === '=') {
-                    clearDisplayAndData();
-                }
-
-                // Display the number given an operator is picked
-                if (operator !== null &&
-                    ARR_OPERATORS.includes(strLastClckVal)) {
-                    inputDisplay.value = '0';
-                }
-                inputDisplay.value += calcBtnVal;
-                btnDecimal.disabled = true;
                 break;
 
             default:
@@ -216,15 +194,23 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     clearDisplayAndData();
                 }
 
-                // Display the number given an operator is picked
-                if ((operator !== null &&
+                // Display another number given an operator is picked
+                if (ARR_DIGITS.includes(calcBtnVal) &&
+                    ((operator !== null &&
                     ARR_OPERATORS.includes(strLastClckVal)) ||
                     // Prevent leading zeroes
-                    inputDisplay.value === '0') {
+                    inputDisplay.value === '0')) {
                     inputDisplay.value = '';
+                } else if (calcBtnVal === '.' && (
+                    operator !== null &&
+                    ARR_OPERATORS.includes(strLastClckVal))) {
+                    inputDisplay.value = '0';
                 }
                 
                 inputDisplay.value += calcBtnVal;
+                if (calcBtnVal === '.') {
+                    btnDecimal.disabled = true;
+                }
         }
         strLastClckVal = calcBtnVal;
 
@@ -261,3 +247,8 @@ clearDisplayAndData();
 // MANUAL TEST #5: 12 + 13 = 25
 
 // Guide: https://www.calculatorsoup.com/calculators/math/basic.php
+
+// Remaining:
+// 1) Refactor the code again (with testing)
+// 2) Add keyboard support
+// 3) Refactor the code again (with testing)
