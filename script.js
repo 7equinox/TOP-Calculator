@@ -108,7 +108,8 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 removeBtnClckEffect();
 
                 if (num1 === Infinity || // Undefined output
-                    strLastClckVal === null) { // Invalid (only clicks '=')
+                    strLastClckVal === null || // Invalid (only clicks '=')
+                    ARR_OPERATORS.includes(strLastClckVal)) {
                     return;
                 } else if (Number.isNaN(num1) || // Only input 1st num then '='
                            strLastClckVal === '=') { // Calc output & 2nd num
