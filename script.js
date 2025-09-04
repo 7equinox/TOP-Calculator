@@ -23,8 +23,18 @@ function operate(num1, operator, num2) {
     }
 }
 
-const inputDisplay = document.querySelector('#input-display');
+function checkRoundLongDeci(numOutput) {
+    let strOutput = numOutput.toString();
+    const strOutputParts = strOutput.split('.');
 
+    if(strOutputParts[1].length > INT_MAX_DEC_PLACES) {
+        strOutput = numOutput.toFixed(INT_MAX_DEC_PLACES);
+        return parseFloat(strOutput);
+    }
+    return numOutput;
+}
+
+const inputDisplay = document.querySelector('#input-display');
 const listBtnCalc = document.querySelectorAll('button');
 const listBtnOprtr = document.querySelectorAll('.btn-operator');
 
@@ -41,6 +51,8 @@ const ARR_DIGITS = [
     0
 ];
 const ARR_OPERATORS = ['*', '/', '+', '-'];
+
+const INT_MAX_DEC_PLACES = 8;
 
 let num1 = NaN;
 let operator = null;
@@ -69,13 +81,13 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 
             case '=':
                 if (strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
-                    num1 = Number(inputDisplay.value);
+                    num1 = parseInt(inputDisplay.value);
                 } else { // fix to align manual test case #3
-                    num2 = Number(inputDisplay.value);
+                    num2 = parseInt(inputDisplay.value);
                 }
 
                 num1 = operate(num1, operator, num2);
-                inputDisplay.value = num1;
+                inputDisplay.value = checkRoundLongDeci(num1);
 
                 listBtnOprtr.forEach(btnOperator => {
                     btnOperator.classList.remove('btn-clck');
@@ -88,11 +100,11 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
             case '-':
                 if (operator !== null &&
                     ARR_DIGITS.includes(strLastClckVal)) {
-                    num2 = Number(inputDisplay.value);
+                    num2 = parseInt(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     inputDisplay.value = num1;
                 }
-                num1 = Number(inputDisplay.value);
+                num1 = parseInt(inputDisplay.value);
                 operator = calcBtnVal;
                 
                 listBtnOprtr.forEach(btnOperator => {
@@ -111,12 +123,12 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
         }
         strLastClckVal = calcBtnVal;
 
-        console.log("=========================");
-        console.log("inputDisplay.value = " + inputDisplay.value);
-        console.log("num1 = " + num1);
-        console.log("operator = " + operator);
-        console.log("num2 = " + num2);
-        console.log("strLastClckVal = " + strLastClckVal);
+        // console.log("=========================");
+        // console.log("inputDisplay.value = " + inputDisplay.value);
+        // console.log("num1 = " + num1);
+        // console.log("operator = " + operator);
+        // console.log("num2 = " + num2);
+        // console.log("strLastClckVal = " + strLastClckVal);
     });
 });
 
