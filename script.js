@@ -24,83 +24,99 @@ function operate(num1, operator, num2) {
 }
 
 const inputDisplay = document.querySelector('#input-display');
-// console.log(inputDisplay);
+
 const listBtnCalc = document.querySelectorAll('button');
-// console.log(listBtnCalc);
 const listBtnOprtr = document.querySelectorAll('.btn-operator');
-const ARR_CALC_BTN_VAL = [7, 8, 9, '*',
-                        4, 5, 6, '/',
-                        1, 2, 3, '+',
-                        'clear', 0, '=', '-'];
+
+const ARR_CALC_BTN_VAL = [
+    7, 8, 9, '*',
+    4, 5, 6, '/',
+    1, 2, 3, '+',
+    'clear', 0, '=', '-'
+];
+const ARR_DIGITS = [
+    7, 8, 9,
+    4, 5, 6,
+    1, 2, 3,
+    0
+];
+const ARR_OPERATORS = ['*', '/', '+', '-'];
 
 let num1 = NaN;
-let operator = '';
+let operator = null;
 let num2 = NaN;
 
-let strInput = '';
+let strLastClckVal = null;
 
 listBtnCalc.forEach((btnCalc, numIdx) => {
-    // console.log(btnCalc.textContent);
     btnCalc.addEventListener('click', () => {
         const calcBtnVal = ARR_CALC_BTN_VAL[numIdx];
-        // console.log(ARR_CALC_BTN_VAL[numIdx]);
+
         switch (calcBtnVal) {
             case 'clear':
                 inputDisplay.value = '';
                 num1 = NaN;
-                operator = '';
+                operator = null;
                 num2 = NaN;
-                strInput = '';
+                strLastClckVal = null;
 
                 listBtnOprtr.forEach(btnOperator => {
                     btnOperator.classList.remove('btn-clck');
                 });
+                
+                console.clear();
                 break;
+                
             case '=':
-                if (num1 !== strInput) {
+                if (strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
+                    num1 = Number(inputDisplay.value);
+                } else { // fix to align manual test case #3
                     num2 = Number(inputDisplay.value);
                 }
+
                 num1 = operate(num1, operator, num2);
                 inputDisplay.value = num1;
-                // operator = '';
-                strInput = num1;
 
                 listBtnOprtr.forEach(btnOperator => {
                     btnOperator.classList.remove('btn-clck');
                 });
                 break;
+
             case '*':
             case '/':
             case '+':
             case '-':
-                console.log("=========================");
-                console.log("inputDisplay.value = " + inputDisplay.value);
-                console.log("num1 = " + num1);
-                console.log("operator = " + operator);
-                console.log("num2 = " + num2);
-                console.log("strInput = " + strInput);
-                if (operator !== '' && num1 !== strInput && num1 != inputDisplay.value) {
+                if (operator !== null &&
+                    ARR_DIGITS.includes(strLastClckVal)) {
                     num2 = Number(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     inputDisplay.value = num1;
                 }
                 num1 = Number(inputDisplay.value);
                 operator = calcBtnVal;
-                strInput = '';
-
+                
                 listBtnOprtr.forEach(btnOperator => {
                     btnOperator.classList.remove('btn-clck');
                 });
                 btnCalc.classList.add('btn-clck');
                 break;
+
             default:
-                if (operator !== '') {
+                if (operator !== null &&
+                    (ARR_OPERATORS.includes(strLastClckVal) ||
+                    strLastClckVal === '=')) { // 12 + 13 (it comes 3 and not 13)
                     inputDisplay.value = '';
                 }
                 inputDisplay.value += calcBtnVal;
-                strInput += calcBtnVal;
         }
+        strLastClckVal = calcBtnVal;
 
+        console.log("=========================");
+        console.log("inputDisplay.value = " + inputDisplay.value);
+        console.log("num1 = " + num1);
+        console.log("operator = " + operator);
+        console.log("num2 = " + num2);
+        console.log("strLastClckVal = " + strLastClckVal);
     });
 });
 
@@ -118,15 +134,6 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
  *  Step 3: Click '- <-- it must change the 'click' effect into this (operator = '-')
  *  Step 3: Click '3'
  *  Step 4: Click '=' <-- it must remove the 'click' effect of an operator, it must display -1 (2 - 3 = -1)
- */
-
-/** MANUAL TEST #3
- *  Step 1: Click '2'
- *  Step 2: Click '+' <-- it must show 'click' effect
- *  Step 3: Click '3'
- *  Step 4: Click '=' <-- it must display 5 (2 + 3 = 5) and remove the 'click' effect of an operator
- *  Step 5: Click '4' <-- it must only show 4 in the display
- *  Step 6: Click '=' <-- it must display 7 (4 + 3 = 7)
  */
 
 // or just imitate the logic of https://www.calculatorsoup.com/calculators/math/basic.php
