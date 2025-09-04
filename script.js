@@ -1,3 +1,28 @@
+const inputDisplay = document.querySelector('#input-display');
+const divErrorMsg = document.querySelector('#error-msg');
+const listBtnCalc = document.querySelectorAll('button');
+const listBtnOprtr = document.querySelectorAll('.btn-operator');
+
+const ARR_CALC_BTN_VAL = [
+    7, 8, 9, '*',
+    4, 5, 6, '/',
+    1, 2, 3, '+',
+    'clear', 0, '=', '-'
+];
+const ARR_DIGITS = [
+    7, 8, 9,
+    4, 5, 6,
+    1, 2, 3,
+    0
+];
+const ARR_OPERATORS = ['*', '/', '+', '-'];
+const INT_MAX_DEC_PLACES = 8;
+
+let num1 = NaN;
+let operator = null;
+let num2 = NaN;
+let strLastClckVal = null;
+
 function add(addend1, addend2) {
     return addend1 + addend2;
 }
@@ -23,45 +48,51 @@ function operate(num1, operator, num2) {
     }
 }
 
+// Function to prevent overflow in the display
 function checkRoundLongDeci(numOutput) {
     let strOutput = numOutput.toString();
     const strOutputParts = strOutput.split('.');
 
-    if(strOutputParts.length > 1 &&
-        strOutputParts[1].length > INT_MAX_DEC_PLACES) {
-        strOutput = numOutput.toFixed(INT_MAX_DEC_PLACES);
-
-        return parseFloat(strOutput);
+    // If whole number
+    const boolIsFloatNum = strOutputParts.length === 2;
+    if(!boolIsFloatNum) {
+        return numOutput;
     }
-    return numOutput;
+
+    // Round the numbers if long decimal
+    const boolHasLongDeci = strOutputParts[1].length > INT_MAX_DEC_PLACES;
+    if(boolHasLongDeci) {
+        strOutput = numOutput.toFixed(INT_MAX_DEC_PLACES);
+    }
+    return parseFloat(strOutput);
 }
 
-const inputDisplay = document.querySelector('#input-display');
-const listBtnCalc = document.querySelectorAll('button');
-const listBtnOprtr = document.querySelectorAll('.btn-operator');
-const divErrorMsg = document.querySelector('#error-msg');
+function clearDisplayAndData() {
+    inputDisplay.value = '';
+    divErrorMsg.textContent = '';
+    // console.clear();
+    num1 = NaN;
+    operator = null;
+    num2 = NaN;
+    strLastClckVal = null;
+}
 
-const ARR_CALC_BTN_VAL = [
-    7, 8, 9, '*',
-    4, 5, 6, '/',
-    1, 2, 3, '+',
-    'clear', 0, '=', '-'
-];
-const ARR_DIGITS = [
-    7, 8, 9,
-    4, 5, 6,
-    1, 2, 3,
-    0
-];
-const ARR_OPERATORS = ['*', '/', '+', '-'];
+function removeBtnClckEffect() {
+    listBtnOprtr.forEach(btnOperator => {
+        btnOperator.classList.remove('btn-clck');
+    });
+}
 
-const INT_MAX_DEC_PLACES = 8;
-
-let num1 = NaN;
-let operator = null;
-let num2 = NaN;
-
-let strLastClckVal = null;
+function handleInvalidOutput() {
+    if (num1 === Infinity) {
+        inputDisplay.value = 'undefined';
+        divErrorMsg.textContent = `
+            [ERROR] You cannot divide it by zero.
+        `;
+    } else {
+        inputDisplay.value = checkRoundLongDeci(num1);
+    }
+}
 
 listBtnCalc.forEach((btnCalc, numIdx) => {
     btnCalc.addEventListener('click', () => {
@@ -69,95 +100,68 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
 
         switch (calcBtnVal) {
             case 'clear':
-                listBtnOprtr.forEach(btnOperator => {
-                    btnOperator.classList.remove('btn-clck');
-                });
-
-                inputDisplay.value = '';
-                num1 = NaN;
-                operator = null;
-                num2 = NaN;
-                strLastClckVal = null;
-                divErrorMsg.textContent = '';
-                // console.clear();
+                removeBtnClckEffect();
+                clearDisplayAndData();
                 return;
                 
             case '=':
-                listBtnOprtr.forEach(btnOperator => {
-                    btnOperator.classList.remove('btn-clck');
-                });
+                removeBtnClckEffect();
 
-                if (num1 === Infinity || strLastClckVal === null) {
+                if (num1 === Infinity || // Undefined output
+                    strLastClckVal === null) { // Invalid (only clicks '=')
                     return;
-                } else if (Number.isNaN(num1) || strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
+                } else if (Number.isNaN(num1) || // Only input 1st num then '='
+                           strLastClckVal === '=') { // Calc output & 2nd num
                     num1 = parseFloat(inputDisplay.value);
-                } else { // fix to align manual test case #3
+
+                } else { // Operate 1st input number with 2nd input number
                     num2 = parseFloat(inputDisplay.value);
                 }
 
-                if (operator !== null && !Number.isNaN(num2)) {
+                if (operator !== null && // Include operation sign
+                    !Number.isNaN(num2)) { // Defined 2nd input number
                     num1 = operate(num1, operator, num2);
                 }
-
-                if (num1 === Infinity) {
-                    inputDisplay.value = 'undefined';
-                    divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
-                } else {
-                    inputDisplay.value = checkRoundLongDeci(num1);
-                }
+                handleInvalidOutput();
                 break;
 
             case '*':
             case '/':
             case '+':
             case '-':
-                listBtnOprtr.forEach(btnOperator => {
-                    btnOperator.classList.remove('btn-clck');
-                });
+                removeBtnClckEffect();
                 btnCalc.classList.add('btn-clck');
 
+                // Undefined output
                 if (num1 === Infinity) {
                     return;
                 }
 
+                // Evaluate more than a single pair of numbers at a time
                 if (operator !== null &&
                     ARR_DIGITS.includes(strLastClckVal)) {
                     num2 = parseFloat(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
-                    if (num1 === Infinity) {
-                        inputDisplay.value = 'undefined';
-                        divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
-                    } else {
-                        inputDisplay.value = checkRoundLongDeci(num1);
-                    }
+                    handleInvalidOutput();
                 }
-                if (num1 === Infinity) {
-                    inputDisplay.value = 'undefined';
-                    divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
-                } else {
-                    num1 = parseFloat(inputDisplay.value);
-                }
+                num1 = parseFloat(inputDisplay.value);
                 operator = calcBtnVal;
                 break;
 
             default:
+                // Undefined output
                 if (num1 === Infinity) {
                     return;
                 }
 
+                // Start new calc when a result is displayed & press new digit
                 if (strLastClckVal === '=') {
-                    inputDisplay.value = '';
-                    num1 = NaN;
-                    operator = null;
-                    num2 = NaN;
-                    strLastClckVal = null;
-                    divErrorMsg.textContent = '';
-                    // console.clear();
+                    clearDisplayAndData();
                 }
 
+                // Display the number given an operator is picked
                 if (operator !== null &&
-                    (ARR_OPERATORS.includes(strLastClckVal) ||
-                    strLastClckVal === '=')) { // 12 + 13 (it comes 3 and not 13)
+                    ARR_OPERATORS.includes(strLastClckVal)) {
                     inputDisplay.value = '';
                 }
                 inputDisplay.value += calcBtnVal;
@@ -172,6 +176,9 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
         // console.log("strLastClckVal = " + strLastClckVal);
     });
 });
+
+// Always start fresh in the website
+clearDisplayAndData();
 
 /** MANUAL TEST #1
  *  Step 1: Click '2'
@@ -189,5 +196,8 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
  *  Step 4: Click '=' <-- it must remove the 'click' effect of an operator, it must display -1 (2 - 3 = -1)
  */
 
-// or just imitate the logic of https://www.calculatorsoup.com/calculators/math/basic.php
-// u can do pseudocode first...
+// MANUAL TEST #3: 12 + 7 = 19 - 1 = 18
+// MANUAL TEST #4: 12 + 7 - 1 = 18
+// MANUAL TEST #5: 12 + 13 = 25
+
+// Guide: https://www.calculatorsoup.com/calculators/math/basic.php
