@@ -27,7 +27,8 @@ function checkRoundLongDeci(numOutput) {
     let strOutput = numOutput.toString();
     const strOutputParts = strOutput.split('.');
 
-    if(strOutputParts[1].length > INT_MAX_DEC_PLACES) {
+    if(strOutputParts.length > 1 &&
+        strOutputParts[1].length > INT_MAX_DEC_PLACES) {
         strOutput = numOutput.toFixed(INT_MAX_DEC_PLACES);
         return parseFloat(strOutput);
     }
@@ -77,16 +78,20 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 });
                 
                 console.clear();
-                break;
+                return;
                 
             case '=':
-                if (strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
+                if (strLastClckVal === null) {
+                    return;
+                } else if (Number.isNaN(num1) || strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
                     num1 = parseInt(inputDisplay.value);
                 } else { // fix to align manual test case #3
                     num2 = parseInt(inputDisplay.value);
                 }
 
-                num1 = operate(num1, operator, num2);
+                if (operator !== null && !Number.isNaN(num2)) {
+                    num1 = operate(num1, operator, num2);
+                }
                 inputDisplay.value = checkRoundLongDeci(num1);
 
                 listBtnOprtr.forEach(btnOperator => {
