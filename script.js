@@ -38,6 +38,7 @@ function checkRoundLongDeci(numOutput) {
 const inputDisplay = document.querySelector('#input-display');
 const listBtnCalc = document.querySelectorAll('button');
 const listBtnOprtr = document.querySelectorAll('.btn-operator');
+const divErrorMsg = document.querySelector('#error-msg');
 
 const ARR_CALC_BTN_VAL = [
     7, 8, 9, '*',
@@ -67,21 +68,25 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
 
         switch (calcBtnVal) {
             case 'clear':
+                listBtnOprtr.forEach(btnOperator => {
+                    btnOperator.classList.remove('btn-clck');
+                });
+
                 inputDisplay.value = '';
                 num1 = NaN;
                 operator = null;
                 num2 = NaN;
                 strLastClckVal = null;
-
-                listBtnOprtr.forEach(btnOperator => {
-                    btnOperator.classList.remove('btn-clck');
-                });
-                
-                console.clear();
+                divErrorMsg.textContent = '';
+                // console.clear();
                 return;
                 
             case '=':
-                if (strLastClckVal === null) {
+                listBtnOprtr.forEach(btnOperator => {
+                    btnOperator.classList.remove('btn-clck');
+                });
+
+                if (num1 === Infinity || strLastClckVal === null) {
                     return;
                 } else if (Number.isNaN(num1) || strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
                     num1 = parseInt(inputDisplay.value);
@@ -92,33 +97,53 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 if (operator !== null && !Number.isNaN(num2)) {
                     num1 = operate(num1, operator, num2);
                 }
-                inputDisplay.value = checkRoundLongDeci(num1);
 
-                listBtnOprtr.forEach(btnOperator => {
-                    btnOperator.classList.remove('btn-clck');
-                });
+                if (num1 === Infinity) {
+                    inputDisplay.value = 'undefined';
+                    divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
+                } else {
+                    inputDisplay.value = checkRoundLongDeci(num1);
+                }
                 break;
 
             case '*':
             case '/':
             case '+':
             case '-':
-                if (operator !== null &&
-                    ARR_DIGITS.includes(strLastClckVal)) {
-                    num2 = parseInt(inputDisplay.value);
-                    num1 = operate(num1, operator, num2);
-                    inputDisplay.value = num1;
-                }
-                num1 = parseInt(inputDisplay.value);
-                operator = calcBtnVal;
-                
                 listBtnOprtr.forEach(btnOperator => {
                     btnOperator.classList.remove('btn-clck');
                 });
                 btnCalc.classList.add('btn-clck');
+
+                if (num1 === Infinity) {
+                    return;
+                }
+
+                if (operator !== null &&
+                    ARR_DIGITS.includes(strLastClckVal)) {
+                    num2 = parseInt(inputDisplay.value);
+                    num1 = operate(num1, operator, num2);
+                    if (num1 === Infinity) {
+                        inputDisplay.value = 'undefined';
+                        divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
+                    } else {
+                        inputDisplay.value = checkRoundLongDeci(num1);
+                    }
+                }
+                if (num1 === Infinity) {
+                    inputDisplay.value = 'undefined';
+                    divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
+                } else {
+                    num1 = parseInt(inputDisplay.value);
+                }
+                operator = calcBtnVal;
                 break;
 
             default:
+                if (num1 === Infinity) {
+                    return;
+                }
+
                 if (operator !== null &&
                     (ARR_OPERATORS.includes(strLastClckVal) ||
                     strLastClckVal === '=')) { // 12 + 13 (it comes 3 and not 13)
