@@ -2,6 +2,7 @@ const inputDisplay = document.querySelector('#input-display');
 const divErrorMsg = document.querySelector('#error-msg');
 const listBtnCalc = document.querySelectorAll('button');
 const listBtnOprtr = document.querySelectorAll('.btn-operator');
+const btnDecimal = document.querySelector('.btn-decimal');
 
 const ARR_CALC_BTN_VAL = [
     'clear', 'backspace',
@@ -71,6 +72,7 @@ function checkRoundLongDeci(numOutput) {
 function clearDisplayAndData() {
     inputDisplay.value = '0';
     divErrorMsg.textContent = '';
+    btnDecimal.disabled = false;
     console.clear();
     num1 = NaN;
     operator = null;
@@ -125,6 +127,12 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     num1 = operate(num1, operator, num2);
                 }
                 handleInvalidOutput();
+
+                if (inputDisplay.value.includes('.')) {
+                    btnDecimal.disabled = true;
+                } else {
+                    btnDecimal.disabled = false;
+                }
                 break;
 
             case '*':
@@ -147,9 +155,30 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     num2 = parseFloat(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     handleInvalidOutput();
+                    if (inputDisplay.value.includes('.')) {
+                        btnDecimal.disabled = true;
+                    } else {
+                        btnDecimal.disabled = false;
+                    }
                 }
                 num1 = parseFloat(inputDisplay.value);
                 operator = calcBtnVal;
+                btnDecimal.disabled = false;
+                break;
+
+            case '.':
+                // Undefined output
+                if (num1 === Infinity) {
+                    return;
+                }
+
+                // Display the number given an operator is picked
+                if (operator !== null &&
+                    ARR_OPERATORS.includes(strLastClckVal)) {
+                    inputDisplay.value = '0';
+                }
+                inputDisplay.value += calcBtnVal;
+                btnDecimal.disabled = true;
                 break;
 
             default:

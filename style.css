@@ -57,6 +57,7 @@ button {
     width: 6rem;
     height: 6rem;
     font-size: 4rem;
+    text-align: center;
     border: 0.25rem solid #AEC6CF;
     border-radius: 2rem;
 }
@@ -96,6 +97,7 @@ button:active {
     color: #FFFFFF;
 }
 
+button:disabled,
 .btn-clck {
     background-color: #222;
     color: #CFECEC;
