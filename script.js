@@ -4,10 +4,11 @@ const listBtnCalc = document.querySelectorAll('button');
 const listBtnOprtr = document.querySelectorAll('.btn-operator');
 
 const ARR_CALC_BTN_VAL = [
+    'clear', 'backspace',
     7, 8, 9, '*',
     4, 5, 6, '/',
     1, 2, 3, '+',
-    'clear', 0, '=', '-'
+    '.', 0, '=', '-'
 ];
 const ARR_DIGITS = [
     7, 8, 9,

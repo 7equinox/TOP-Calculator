@@ -38,7 +38,7 @@ body {
 .container-btn {
     display: flex;
     flex-wrap: wrap;
-    row-gap: 3rem;
+    row-gap: 1rem;
     justify-content: center;
     align-items: center;
 }
@@ -47,6 +47,10 @@ body {
     width: 29rem;
     display: flex;
     justify-content: space-between;
+}
+
+.row-container:first-child > button {
+    width: 13.5rem;
 }
 
 button {
@@ -67,14 +71,24 @@ button:active {
     color: darkblue;
 }
 
+.btn-clear {
+    background-color: #A45A52;
+    color: #FAF9F6;
+    font-size: 3rem;
+}
+
+.btn-backspace {
+    background-color: #FAD5A5;
+    font-size: 2rem;
+}
+
 .btn-operator {
     background-color: #cfa117;
     color: #2C2C2C;
 }
 
-.btn-clear {
-    background-color: #A45A52;
-    color: #FAF9F6;
+.btn-decimal {
+    background-color: #10b6cc;
 }
 
 .btn-equal {
