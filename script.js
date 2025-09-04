@@ -30,6 +30,7 @@ function checkRoundLongDeci(numOutput) {
     if(strOutputParts.length > 1 &&
         strOutputParts[1].length > INT_MAX_DEC_PLACES) {
         strOutput = numOutput.toFixed(INT_MAX_DEC_PLACES);
+
         return parseFloat(strOutput);
     }
     return numOutput;
@@ -89,9 +90,9 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 if (num1 === Infinity || strLastClckVal === null) {
                     return;
                 } else if (Number.isNaN(num1) || strLastClckVal === '=') { // 12 + 7 = 19 - 1 = 18 (but it goes = 19.. 1 - 7 = -6)
-                    num1 = parseInt(inputDisplay.value);
+                    num1 = parseFloat(inputDisplay.value);
                 } else { // fix to align manual test case #3
-                    num2 = parseInt(inputDisplay.value);
+                    num2 = parseFloat(inputDisplay.value);
                 }
 
                 if (operator !== null && !Number.isNaN(num2)) {
@@ -121,7 +122,7 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
 
                 if (operator !== null &&
                     ARR_DIGITS.includes(strLastClckVal)) {
-                    num2 = parseInt(inputDisplay.value);
+                    num2 = parseFloat(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     if (num1 === Infinity) {
                         inputDisplay.value = 'undefined';
@@ -134,7 +135,7 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     inputDisplay.value = 'undefined';
                     divErrorMsg.textContent = "[ERROR] You cannot divide it by zero.";
                 } else {
-                    num1 = parseInt(inputDisplay.value);
+                    num1 = parseFloat(inputDisplay.value);
                 }
                 operator = calcBtnVal;
                 break;
@@ -142,6 +143,16 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
             default:
                 if (num1 === Infinity) {
                     return;
+                }
+
+                if (strLastClckVal === '=') {
+                    inputDisplay.value = '';
+                    num1 = NaN;
+                    operator = null;
+                    num2 = NaN;
+                    strLastClckVal = null;
+                    divErrorMsg.textContent = '';
+                    // console.clear();
                 }
 
                 if (operator !== null &&
