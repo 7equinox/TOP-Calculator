@@ -106,7 +106,26 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 removeBtnClckEffect();
                 clearDisplayAndData();
                 return;
-                
+            
+            case 'backspace':
+                // Start new calc when a result is displayed & press new digit
+                if (strLastClckVal === '=') {
+                    clearDisplayAndData();
+                }
+
+                if (inputDisplay.value !== '0') {
+                    inputDisplay.value = inputDisplay.value.slice(0, -1);
+                    if (inputDisplay.value.includes('.')) {
+                        btnDecimal.disabled = true;
+                    } else {
+                        btnDecimal.disabled = false;
+                    }
+                }
+                if (inputDisplay.value === '') {
+                    inputDisplay.value = '0';
+                }
+                break;
+
             case '=':
                 removeBtnClckEffect();
 
@@ -172,6 +191,11 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     return;
                 }
 
+                // Start new calc when a result is displayed & press new digit
+                if (strLastClckVal === '=') {
+                    clearDisplayAndData();
+                }
+
                 // Display the number given an operator is picked
                 if (operator !== null &&
                     ARR_OPERATORS.includes(strLastClckVal)) {
@@ -199,7 +223,7 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                     inputDisplay.value === '0') {
                     inputDisplay.value = '';
                 }
-
+                
                 inputDisplay.value += calcBtnVal;
         }
         strLastClckVal = calcBtnVal;
