@@ -14,12 +14,8 @@ function divide(dividend, divisor) {
     return dividend / divisor;
 }
 
-let num1;
-let operator;
-let num2;
-
 function operate(num1, operator, num2) {
-    switch(operator) {
+    switch (operator) {
         case '+': return add(num1, num2);
         case '-': return subtract(num1, num2);
         case '*': return multiply(num1, num2);
@@ -31,84 +27,67 @@ const inputDisplay = document.querySelector('#input-display');
 // console.log(inputDisplay);
 const listBtnCalc = document.querySelectorAll('button');
 // console.log(listBtnCalc);
-const ARR_NUM_OP_VAL = [7, 8, 9, '*',
+const ARR_CALC_BTN_VAL = [7, 8, 9, '*',
                         4, 5, 6, '/',
                         1, 2, 3, '+',
                         'clear', 0, '=', '-'];
 
-let strDsplyDigit = '';
-let boolHasOperator = false;
+let num1 = NaN;
+let operator = '';
+let num2 = NaN;
 
-listBtnCalc.forEach((btnDigit, numIdx) => {
-    // console.log(btnDigit.id);
+let strInput = '';
 
-    btnDigit.addEventListener('click', () => {
-        // console.log(btnDigit.id[4]);
-        switch(ARR_NUM_OP_VAL[numIdx]) {
+listBtnCalc.forEach((btnCalc, numIdx) => {
+    // console.log(btnCalc.textContent);
+    btnCalc.addEventListener('click', () => {
+        const calcBtnVal = ARR_CALC_BTN_VAL[numIdx];
+        // console.log(ARR_CALC_BTN_VAL[numIdx]);
+        switch (calcBtnVal) {
+            case 'clear':
+                inputDisplay.value = '';
+                num1 = NaN;
+                operator = '';
+                num2 = NaN;
+                strInput = '';
+                break;
+            case '=':
+                if (num1 !== strInput) {
+                    num2 = Number(inputDisplay.value);
+                }
+                num1 = operate(num1, operator, num2);
+                inputDisplay.value = num1;
+                // operator = '';
+                strInput = num1;
+                break;
             case '*':
             case '/':
             case '+':
             case '-':
-                if (operator === '') {
-                    num1 = Number(strDsplyDigit);
-                    console.log(strDsplyDigit);
-                    strDsplyDigit = '';
-                } else {
-                    num2 = Number(strDsplyDigit);
-                    // console.log("NUM1: " + num1);
-                    // console.log("OP: " + operator);
-                    // console.log("NUM2: " + num2);
+                if (operator !== '' && num1 !== strInput) {
+                    num2 = Number(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     inputDisplay.value = num1;
                 }
-                // console.log(strDsplyDigit);
-                operator = ARR_NUM_OP_VAL[numIdx];
-                boolHasOperator = true;
-                return;
-            case '=':
-                // for (let i = 0; i < strDsplyDigit.length; i++) {
-                //     console.log(typeof i);
-                // }
-                // console.log(strDsplyDigit);
-                num2 = Number(strDsplyDigit);
-                num1 = operate(num1, operator, num2);
-                console.log("NUM1: " + num1);
-                console.log("OP: " + operator);
-                console.log("NUM2: " + num2);
-                // console.log( num1 );
-                inputDisplay.value = num1;
-                strDsplyDigit = num1;
-                // TODO: Continue 7. Gotchas: watch out for and fix these bugs if they show up in your code: 
-                operator = '';
-                // console.log(strDsplyDigit);
-                return;
-            case 'clear':
-                inputDisplay.value = '';
-                strDsplyDigit = '';
-                operator = '';
-                // console.log(strDsplyDigit);
-                return;
+                num1 = Number(inputDisplay.value);
+                operator = calcBtnVal;
+                strInput = '';
+                break;
+            default:
+                if (operator !== '') {
+                    inputDisplay.value = '';
+                }
+                inputDisplay.value += calcBtnVal;
+                strInput += calcBtnVal;
         }
-        
-        if(operator !== '' && boolHasOperator) {
-            inputDisplay.value = '';
-            boolHasOperator = false;
-        }
-        inputDisplay.value += ARR_NUM_OP_VAL[numIdx];
-        strDsplyDigit = inputDisplay.value;
-        console.log(strDsplyDigit);
-        // console.log("OP: " + operator);
+        console.log("=========================");
+        console.log("inputDisplay.value = " + inputDisplay.value);
+        console.log("num1 = " + num1);
+        console.log("operator = " + operator);
+        console.log("num2 = " + num2);
+        console.log("strInput = " + strInput);
     });
 });
-
-// num1 = 10;
-// operator = '*'
-// num2 = 5;
-
-// console.log( operate(num1, '+', num2) ); // 15
-// console.log( operate(num1, '-', num2) ); // 5
-// console.log( operate(num1, operator, num2) ); // 50
-// console.log( operate(num1, '/', num2) ); // 2
 
 /** MANUAL TEST #1
  *  Step 1: Click '2'
