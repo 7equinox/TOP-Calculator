@@ -27,6 +27,7 @@ const inputDisplay = document.querySelector('#input-display');
 // console.log(inputDisplay);
 const listBtnCalc = document.querySelectorAll('button');
 // console.log(listBtnCalc);
+const listBtnOprtr = document.querySelectorAll('.btn-operator');
 const ARR_CALC_BTN_VAL = [7, 8, 9, '*',
                         4, 5, 6, '/',
                         1, 2, 3, '+',
@@ -50,6 +51,10 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 operator = '';
                 num2 = NaN;
                 strInput = '';
+
+                listBtnOprtr.forEach(btnOperator => {
+                    btnOperator.classList.remove('btn-clck');
+                });
                 break;
             case '=':
                 if (num1 !== strInput) {
@@ -59,12 +64,22 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 inputDisplay.value = num1;
                 // operator = '';
                 strInput = num1;
+
+                listBtnOprtr.forEach(btnOperator => {
+                    btnOperator.classList.remove('btn-clck');
+                });
                 break;
             case '*':
             case '/':
             case '+':
             case '-':
-                if (operator !== '' && num1 !== strInput) {
+                console.log("=========================");
+                console.log("inputDisplay.value = " + inputDisplay.value);
+                console.log("num1 = " + num1);
+                console.log("operator = " + operator);
+                console.log("num2 = " + num2);
+                console.log("strInput = " + strInput);
+                if (operator !== '' && num1 !== strInput && num1 != inputDisplay.value) {
                     num2 = Number(inputDisplay.value);
                     num1 = operate(num1, operator, num2);
                     inputDisplay.value = num1;
@@ -72,6 +87,11 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 num1 = Number(inputDisplay.value);
                 operator = calcBtnVal;
                 strInput = '';
+
+                listBtnOprtr.forEach(btnOperator => {
+                    btnOperator.classList.remove('btn-clck');
+                });
+                btnCalc.classList.add('btn-clck');
                 break;
             default:
                 if (operator !== '') {
@@ -80,12 +100,7 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
                 inputDisplay.value += calcBtnVal;
                 strInput += calcBtnVal;
         }
-        console.log("=========================");
-        console.log("inputDisplay.value = " + inputDisplay.value);
-        console.log("num1 = " + num1);
-        console.log("operator = " + operator);
-        console.log("num2 = " + num2);
-        console.log("strInput = " + strInput);
+
     });
 });
 
@@ -99,9 +114,10 @@ listBtnCalc.forEach((btnCalc, numIdx) => {
 
 /** MANUAL TEST #2
  *  Step 1: Click '2'
- *  Step 2: Click '+' <-- it must show 'click' effect
+ *  Step 2: Click '*' <-- it must show 'click' effect (operator = '*')
+ *  Step 3: Click '- <-- it must change the 'click' effect into this (operator = '-')
  *  Step 3: Click '3'
- *  Step 4: Click '=' <-- it must remove the 'click' effect of an operator
+ *  Step 4: Click '=' <-- it must remove the 'click' effect of an operator, it must display -1 (2 - 3 = -1)
  */
 
 /** MANUAL TEST #3
