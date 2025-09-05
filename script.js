@@ -326,4 +326,4 @@ document.addEventListener("cut", (eventClip) => {
 clearDisplayAndData();
 
 // Make input text not editable
-inputDisplay.disabled = true;
+inputDisplay.readOnly = true;
