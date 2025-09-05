@@ -73,7 +73,6 @@ function clearDisplayAndData() {
     inputDisplay.value = '0';
     divErrorMsg.textContent = '';
     btnDecimal.disabled = false;
-    console.clear();
     num1 = NaN;
     operator = null;
     num2 = NaN;
@@ -236,13 +235,6 @@ function handleCalcButtons({
             inputDisplay.value += calcBtnVal;
     }
     strLastClckVal = calcBtnVal;
-
-    console.log("=========================");
-    console.log("inputDisplay.value = " + inputDisplay.value);
-    console.log("num1 = " + num1);
-    console.log("operator = " + operator);
-    console.log("num2 = " + num2);
-    console.log("strLastClckVal = " + strLastClckVal);
 }
 
 // Event listener for clicking buttons
@@ -317,31 +309,21 @@ document.addEventListener('keyup', (event) => {
     });
 });
 
+// Disable right click inside the website
+document.addEventListener("contextmenu", (eventMouse) => {
+    eventMouse.preventDefault()
+});
+
+// Disable copy and cut inside the website
+document.addEventListener("copy", (eventClip) => {
+    eventClip.preventDefault()
+});
+document.addEventListener("cut", (eventClip) => {
+    eventClip.preventDefault()
+});
+
 // Always start fresh in the website
 clearDisplayAndData();
 
-/** MANUAL TEST #1
- *  Step 1: Click '2'
- *  Step 2: Click '+' <-- it must not show + in the display
- *  Step 3: Click '3'
- *  Step 4: Click '=' <-- it must display 5 (2 + 3 = 5)
- *  Step 5: Click '=' again <-- it must display 8 (5 + 3 = 8)
- */
-
-/** MANUAL TEST #2
- *  Step 1: Click '2'
- *  Step 2: Click '*' <-- it must show 'click' effect (operator = '*')
- *  Step 3: Click '- <-- it must change the 'click' effect into this (operator = '-')
- *  Step 3: Click '3'
- *  Step 4: Click '=' <-- it must remove the 'click' effect of an operator, it must display -1 (2 - 3 = -1)
- */
-
-// MANUAL TEST #3: 12 + 7 = 19 - 1 = 18
-// MANUAL TEST #4: 12 + 7 - 1 = 18
-// MANUAL TEST #5: 12 + 13 = 25
-
-// Guide: https://www.calculatorsoup.com/calculators/math/basic.php
-
-// Remaining:
-// 1) Add keyboard support [INCLUDE THEM IN INPUT TEXT TYPE TO LISTEN]
-// 2) Refactor the code again (with testing)
+// Make input text not editable
+inputDisplay.disabled = true;

@@ -4,6 +4,8 @@
 
 body {
     background-color: #2C2C2C;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .container {
@@ -26,6 +28,12 @@ body {
     padding: 0 1rem;
     font-size: 3rem;
     text-align: right;
+}
+
+#input-display:disabled {
+    background-color: #fff;
+    color: #000;
+    opacity: 1;
 }
 
 #error-msg {
