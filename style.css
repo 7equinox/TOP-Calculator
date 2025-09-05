@@ -62,14 +62,13 @@ button {
     border-radius: 2rem;
 }
 
-button:hover {
+button:hover,
+.button-hover {
     background-color: #FFD1DC;
     color: #6A5ACD;
-}
-
-button:active {
-    background-color: lightpink;
-    color: darkblue;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
 }
 
 .btn-clear {
@@ -95,6 +94,14 @@ button:active {
 .btn-equal {
     background-color: #6B8E23;
     color: #FFFFFF;
+}
+
+button:active,
+.button-active {
+    background-color: lightpink;
+    color: darkblue;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.8);
+    transform: translateY(5px);
 }
 
 button:disabled,
